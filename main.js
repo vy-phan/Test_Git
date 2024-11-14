@@ -1,11 +1,11 @@
-const sheetID = '1nWqerqanqhGPxbBxnxqyCHWLQF2WetG3D-dzNkfB-Gg'
+const sheetID = '1KLc5OKZqVnPHxjcrOc5lrpYeZ0xymRU8nOfLl9hK614'
 const baseURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`
 const query = encodeURIComponent('Select *')
 const sheetName = 'users'
 const url = `${baseURL}&query=${sheetName}&tg=${query}`
 
 // URL của Google Apps Script Web App của bạn
-const scriptURL = '1To8YJx4tTZaf0-CnxHZvYSJBA0kYiV2v0Edb3w3mxNeF4lQ-1C1RLVPo'
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyt8Cie1PGw8Gjck4Fc4N4yVads90b3ZCR4xEOzrpY/dev'
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -19,15 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         
         try {
-            const response = await fetch(url);
-            const data = await response.text();
-            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
-            const rows = jsonData.table.rows;
+            const response = await fetch(scriptURL);
+            const jsonData = await response.json();
             
-            const user = rows.find(row => {
-                const userData = row.c;
-                return userData[0].v === username && userData[1].v === password;
-            });
+            const user = jsonData.data.find(user => 
+                user.username === username && user.password === password
+            );
             
             if (user) {
                 alert('Đăng nhập thành công!');
@@ -44,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const username = document.getElementById('password').value;
+        const username = document.getElementById('regUsername').value;
         const password = document.getElementById('regPassword').value;
         const confirmPassword = document.getElementById('regConfirmPassword').value;
 
@@ -54,14 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Kiểm tra tài khoản đã tồn tại
         try {
-            const response = await fetch(url);
-            const data = await response.text();
-            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
-            const rows = jsonData.table.rows;
+            // Kiểm tra tài khoản đã tồn tại
+            const response = await fetch(scriptURL);
+            const jsonData = await response.json();
             
-            const userExists = rows.some(row => row.c[0].v === username);
+            const userExists = jsonData.data.some(user => user.username === username);
             
             if (userExists) {
                 alert('Tên đăng nhập đã tồn tại!');
@@ -69,21 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Gửi dữ liệu đăng ký đến Google Apps Script
-            const formData = new FormData();
-            formData.append('username', username);
-            formData.append('password', password);
-
             const response2 = await fetch(scriptURL, {
                 method: 'POST',
-                body: formData
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
             });
 
-            if (response2.ok) {
-                alert('Đăng ký thành công!');
-                registerForm.reset();
-            } else {
-                throw new Error('Lỗi khi đăng ký');
-            }
+            alert('Đăng ký thành công!');
+            registerForm.reset();
+            window.location.href = 'index.html'; // Chuyển về trang đăng nhập
+            
         } catch (error) {
             console.error('Lỗi:', error);
             alert('Có lỗi xảy ra khi đăng ký!');
