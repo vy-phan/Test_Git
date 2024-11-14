@@ -5,7 +5,7 @@ const sheetName = 'users'
 const url = `${baseURL}&query=${sheetName}&tg=${query}`
 
 // URL của Google Apps Script Web App của bạn
-const scriptURL = 'https://script.google.com/macros/s/AKfycbyt8Cie1PGw8Gjck4Fc4N4yVads90b3ZCR4xEOzrpY/dev'
+const scriptURL = 'https://script.googleusercontent.com/macros/echo?user_content_key=11KThATMRW28DpgfmTu1bUPC3m1_9jGld_A-7GgYznkM1Gkb0D488aDh5uDgurAM45CS4Sjh_vNNkmNg1YkXGd64m_YR1a0om5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnA9kSnu6HxDtdiXGCAoYtDzlIiPxXifjnNLBta_NU9znB_Gkq5fev3svRndt8T8YEXvvzAdRwyIRRHZx7yBLGYkACCOo0DRCOg&lib=MDbi98GmaevfUJIRysdtUai51ztMsFRcz'
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
